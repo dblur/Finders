@@ -9,5 +9,4 @@ public class FinderApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FinderApplication.class, args);
 	}
-
 }
