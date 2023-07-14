@@ -1,18 +1,19 @@
-package org.javakid.Finder.entities;
+package org.javakid.Finder.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.javakid.Finder.enums.Role;
+import org.javakid.Finder.enums.Sex;
 
 @Entity
-@Table(name = "recruiters")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Recruiter {
-
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,6 +35,11 @@ public class Recruiter {
     @NonNull
     private Sex sex;
 
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @NonNull
+    private Role role;
+
     @Column(name = "email", nullable = false)
     @NonNull
     private String email;
@@ -50,7 +56,10 @@ public class Recruiter {
     @NonNull
     private String country;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "experience")
+    private String experience;
+
+    @OneToOne
     @JoinColumn(name = "company_id")
     private Company company;
 }
