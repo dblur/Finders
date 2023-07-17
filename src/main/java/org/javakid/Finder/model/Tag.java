@@ -6,11 +6,8 @@ import lombok.*;
 
 @Entity
 @Table(name = "tag")
-@EqualsAndHashCode(of = {"id", "tagName"})
-@Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class Tag {
 
     @Id
