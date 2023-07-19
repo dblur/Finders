@@ -5,7 +5,7 @@ import org.javakid.Finder.enums.Role;
 import org.javakid.Finder.enums.Sex;
 import org.javakid.Finder.payload.CompanyRequest;
 import org.javakid.Finder.payload.UserRequest;
-import org.javakid.Finder.services.user.UserService;
+import org.javakid.Finder.services.crud.impl.UserCrudService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ class UserControllerTest {
 
     private MockMvc mvc;
     private ObjectMapper mapper;
-    @Mock private UserService userService;
+    @Mock private UserCrudService userCrudService;
     @InjectMocks private UserController userController;
 
     private Long id;
@@ -50,7 +50,7 @@ class UserControllerTest {
 
     @Test
     void shouldAllMocksBeNotNull() {
-        assertNotNull(userService);
+        assertNotNull(userCrudService);
     }
 
     @Test
@@ -60,8 +60,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(userService, times(1)).getUserById(id);
-        verifyNoMoreInteractions(userService);
+        verify(userCrudService, times(1)).getUserDtoById(id);
+        verifyNoMoreInteractions(userCrudService);
     }
 
     @Test
@@ -80,7 +80,7 @@ class UserControllerTest {
                 .andExpect(status().isNoContent())
                 .andReturn().getResponse();
 
-        verify(userService, times(1)).deleteUserById(id);
-        verifyNoMoreInteractions(userService);
+        verify(userCrudService, times(1)).deleteUserById(id);
+        verifyNoMoreInteractions(userCrudService);
     }
 }
