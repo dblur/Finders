@@ -59,7 +59,7 @@ public class User {
     @Column(name = "experience")
     private String experience;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
 }
