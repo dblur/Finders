@@ -2,7 +2,7 @@ package org.javakid.Finder.annotations;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import org.javakid.Finder.enums.Sex;
+import org.javakid.Finder.enums.ESex;
 import org.javakid.Finder.validators.SexSubsetValidator;
 
 import java.lang.annotation.Documented;
@@ -19,7 +19,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = SexSubsetValidator.class)
 public @interface SexSubset {
 
-    Sex[] anyOf();
+    ESex[] anyOf();
     String message() default "must be any of {anyOf}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

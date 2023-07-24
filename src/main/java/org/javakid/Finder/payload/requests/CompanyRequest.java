@@ -1,4 +1,4 @@
-package org.javakid.Finder.payload;
+package org.javakid.Finder.payload.requests;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;

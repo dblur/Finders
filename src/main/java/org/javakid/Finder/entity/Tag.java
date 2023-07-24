@@ -1,4 +1,4 @@
-package org.javakid.Finder.model;
+package org.javakid.Finder.entity;
 
 
 import jakarta.persistence.*;
