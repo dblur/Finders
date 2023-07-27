@@ -20,6 +20,6 @@ public class RegistrationService {
         User user = mapper.toEntity(signUpRequest);
         log.info("Request mapped on User Entity");
         userCrudService.saveUser(user);
-        log.info("User with email {} is registered", user.getEmail());
+        log.info("User with email {} is registered", user.getUsername());
     }
 }
