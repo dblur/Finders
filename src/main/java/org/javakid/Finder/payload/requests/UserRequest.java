@@ -1,12 +1,12 @@
-package org.javakid.Finder.payload;
+package org.javakid.Finder.payload.requests;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.javakid.Finder.annotations.RoleSubset;
-import org.javakid.Finder.enums.Role;
-import org.javakid.Finder.enums.Sex;
+import org.javakid.Finder.enums.ERole;
+import org.javakid.Finder.enums.ESex;
 
 @Setter
 @Getter
@@ -24,11 +24,11 @@ public class UserRequest {
     private Integer age;
 
     @NotNull
-    private Sex sex;
+    private ESex sex;
 
     @NotNull
-    @RoleSubset(anyOf = { Role.ROLE_CANDIDATE, Role.ROLE_RECRUITER })
-    private Role role;
+    @RoleSubset(anyOf = { ERole.CANDIDATE, ERole.RECRUITER })
+    private ERole role;
 
     @NotEmpty
     private String email;

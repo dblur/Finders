@@ -1,16 +1,15 @@
-package org.javakid.Finder.services.crud.impl;
+package org.javakid.Finder.services.crud;
 
 import jakarta.persistence.EntityNotFoundException;
-import org.javakid.Finder.dto.CompanyDto;
+import org.javakid.Finder.dto.ProfileDto;
+import org.javakid.Finder.dto.RoleDto;
 import org.javakid.Finder.dto.UserDto;
-import org.javakid.Finder.entity.Company;
+import org.javakid.Finder.entity.Profile;
+import org.javakid.Finder.entity.Role;
 import org.javakid.Finder.entity.User;
-import org.javakid.Finder.enums.Role;
-import org.javakid.Finder.enums.Sex;
 import org.javakid.Finder.mappers.UserMapper;
-import org.javakid.Finder.payload.CompanyRequest;
-import org.javakid.Finder.payload.UserRequest;
 import org.javakid.Finder.repositories.UserRepository;
+import org.javakid.Finder.services.crud.UserCrudService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +19,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,7 +34,6 @@ class UserCrudServiceTest {
     private Long id;
     private User user;
     private UserDto userDto;
-    private UserRequest userRequest;
     String entityNotFoundMsg;
     String illegalEntityArgumentMsg;
     String illegalIdArgumentMsg;
@@ -43,28 +42,12 @@ class UserCrudServiceTest {
     void setUp() {
         id = 1L;
         user = new User(
-                id, "name", "surname", 20,
-                Sex.FEMALE, Role.ROLE_RECRUITER, "email",
-                "phone", "city", "country",
-                "experience", new Company(
-                        1L, "name", "email",
-                "phone", "city", "country", "scope")
+                id, "email", "password",
+                Set.of(new Role()), new Profile()
         );
         userDto = new UserDto(
-                id, "name", "surname", 20,
-                Sex.FEMALE, Role.ROLE_RECRUITER, "email",
-                "phone", "city", "country",
-                "experience", new CompanyDto(
-                1L, "name", "email",
-                "phone", "city", "country", "scope")
-        );
-        userRequest = new UserRequest(
-                "name", "surname", 20,
-                Sex.FEMALE, Role.ROLE_RECRUITER, "email",
-                "phone", "city", "country",
-                "experience", new CompanyRequest(
-                "name", "email",
-                "phone", "city", "country", "scope")
+                id, "email", "password",
+                Set.of(new RoleDto()), new ProfileDto()
         );
         entityNotFoundMsg = "User with id " + id + " not found";
         illegalEntityArgumentMsg = "User entity must not be null";
@@ -84,7 +67,7 @@ class UserCrudServiceTest {
 
         assertDoesNotThrow(() -> new EntityNotFoundException(entityNotFoundMsg));
         assertEquals(id, actual.getId());
-        Mockito.verify(repository).findById(id);
+        Mockito.verify(repository, Mockito.times(1)).findById(id);
         Mockito.verifyNoMoreInteractions(repository);
     }
 
@@ -95,7 +78,7 @@ class UserCrudServiceTest {
         assertThatThrownBy(() -> userCrudService.getUserById(id))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(entityNotFoundMsg);
-        Mockito.verify(repository).findById(id);
+        Mockito.verify(repository, Mockito.times(1)).findById(id);
         Mockito.verifyNoMoreInteractions(repository);
     }
 
@@ -118,46 +101,16 @@ class UserCrudServiceTest {
 
         assertDoesNotThrow(() -> new IllegalArgumentException(illegalEntityArgumentMsg));
         assertEquals(user, actual);
-        Mockito.verify(repository).save(user);
+        Mockito.verify(repository, Mockito.times(1)).save(user);
         Mockito.verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void shouldThrowExceptionWhenSaveUser() {
-        assertThatThrownBy(() -> userCrudService.saveUser(null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(illegalEntityArgumentMsg);
-        Mockito.verifyNoMoreInteractions(repository);
-    }
-
-    @Test
-    void shouldSaveUserRequest() {
-        Mockito.when(mapper.toEntity(userRequest)).thenReturn(user);
-        Mockito.when(repository.save(user)).thenReturn(user);
-        Mockito.when(mapper.toDto(user)).thenReturn(userDto);
-
-        UserDto actual = userCrudService.saveUserRequest(userRequest);
-
-        assertEquals(userDto, actual);
-        Mockito.verify(mapper, Mockito.times(1)).toEntity(userRequest);
-        Mockito.verify(mapper, Mockito.times(1)).toDto(user);
-        Mockito.verifyNoMoreInteractions(mapper);
-    }
-
-    @Test
-    void shouldDeleteUserByIdWithoutException() {
+    void shouldDeleteUserById() {
         userCrudService.deleteUserById(id);
 
-        assertDoesNotThrow(() -> new IllegalArgumentException(illegalIdArgumentMsg));
-        Mockito.verify(repository).deleteById(id);
+        Mockito.verify(repository, Mockito.times(1)).deleteById(id);
         Mockito.verifyNoMoreInteractions(repository);
-    }
-
-    @Test
-    void shouldThrowExceptionWhenDeleteById() {
-        assertThatThrownBy(() -> userCrudService.deleteUserById(null))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(illegalIdArgumentMsg);
-        Mockito.verifyNoMoreInteractions(repository);
+        Mockito.verifyNoInteractions(mapper);
     }
 }

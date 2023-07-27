@@ -1,19 +1,23 @@
-package org.javakid.Finder.model;
+package org.javakid.Finder.entity;
 
 
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "tag")
 @Getter
 @Setter
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "TAGS")
 public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String tagName;
+    private Long id;
+
+    @Column(name = "name")
+    private String name;
 
     /** TODO when user Entity will be done
     @ManyToOne(fetch = FetchType.LAZY)

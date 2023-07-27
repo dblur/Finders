@@ -1,5 +1,5 @@
 package org.javakid.Finder.enums;
 
-public enum Sex {
+public enum ESex {
     MALE, FEMALE
 }

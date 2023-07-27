@@ -3,13 +3,13 @@ package org.javakid.Finder.validators;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.javakid.Finder.annotations.RoleSubset;
-import org.javakid.Finder.enums.Role;
+import org.javakid.Finder.enums.ERole;
 
 import java.util.Arrays;
 
-public class RoleSubsetValidator implements ConstraintValidator<RoleSubset, Role> {
+public class RoleSubsetValidator implements ConstraintValidator<RoleSubset, ERole> {
 
-    private Role[] roles;
+    private ERole[] roles;
 
     @Override
     public void initialize(RoleSubset constraintAnnotation) {
@@ -17,7 +17,7 @@ public class RoleSubsetValidator implements ConstraintValidator<RoleSubset, Role
     }
 
     @Override
-    public boolean isValid(Role value, ConstraintValidatorContext context) {
+    public boolean isValid(ERole value, ConstraintValidatorContext context) {
         return value == null || Arrays.asList(roles).contains(value);
     }
 }

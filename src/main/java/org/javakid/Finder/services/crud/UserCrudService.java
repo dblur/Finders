@@ -1,16 +1,14 @@
-package org.javakid.Finder.services.crud.impl;
+package org.javakid.Finder.services.crud;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.javakid.Finder.dto.UserDto;
 import org.javakid.Finder.entity.User;
 import org.javakid.Finder.mappers.UserMapper;
-import org.javakid.Finder.payload.UserRequest;
 import org.javakid.Finder.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -20,7 +18,7 @@ public class UserCrudService {
     private final UserMapper mapper;
     private final UserRepository repository;
 
-    public User getUserById(Long id) {
+    public User getUserById(@NonNull Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> {
                     String msg = "User with id " + id + " not found";
@@ -34,29 +32,15 @@ public class UserCrudService {
         return mapper.toDto(user);
     }
 
-    public UserDto saveUserRequest(UserRequest userRequest) {
-        User user = mapper.toEntity(userRequest);
-        log.info("UserRequest has been mapped on User");
-        user = saveUser(user);
-        log.info("User entity is being mapped on UserDto");
-        return mapper.toDto(user);
-    }
-
-    public User saveUser(User user) {
-        if (Objects.isNull(user)) {
-            String msg = "User entity must not be null";
-            log.error(msg);
-            throw new IllegalArgumentException(msg);
-        }
+    public User saveUser(@NonNull User user) {
         return repository.save(user);
     }
 
-    public void deleteUserById(Long id) {
-        if (Objects.isNull(id)) {
-            String msg = "Id must not be null";
-            log.error(msg);
-            throw new IllegalArgumentException(msg);
-        }
+    public void deleteUserById(@NonNull Long id) {
         repository.deleteById(id);
+    }
+
+    public boolean existsUserByEmail(@NonNull String email) {
+        return repository.existsByEmail(email);
     }
 }

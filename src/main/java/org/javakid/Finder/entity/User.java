@@ -1,65 +1,85 @@
 package org.javakid.Finder.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import org.javakid.Finder.enums.Role;
-import org.javakid.Finder.enums.Sex;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "users")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+@Table(name = "USERS")
+public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name", nullable = false)
-    @NonNull
-    private String firstName;
-
-    @Column(name = "second_name", nullable = false)
-    @NonNull
-    private String secondName;
-
-    @Column(name = "age", nullable = false)
-    @NonNull
-    private Integer age;
-
-    @Column(name = "sex", nullable = false)
-    @Enumerated(EnumType.STRING)
-    @NonNull
-    private Sex sex;
-
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    @NonNull
-    private Role role;
-
-    @Column(name = "email", nullable = false)
-    @NonNull
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "phone", nullable = false)
-    @NonNull
-    private String phone;
+    @Column(name = "password", nullable = false)
+    private String password;
 
-    @Column(name = "city", nullable = false)
-    @NonNull
-    private String city;
+    @Column(nullable = false)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles;
 
-    @Column(name = "country", nullable = false)
-    @NonNull
-    private String country;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    private Profile profile;
 
-    @Column(name = "experience")
-    private String experience;
+    public User(String email, String password, Set<Role> roles) {
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+    }
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream()
+                .map(r -> new SimpleGrantedAuthority(r.getName()))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
